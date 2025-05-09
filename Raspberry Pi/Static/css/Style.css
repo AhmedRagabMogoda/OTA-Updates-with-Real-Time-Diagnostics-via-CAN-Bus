@@ -1,0 +1,123 @@
+/* Base reset */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background-color: #f3f4f6;
+    color: #111827;
+}
+
+/* Header */
+header {
+    background-color: #ffffff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    padding: 16px;
+}
+
+header img {
+    height: 48px;
+    margin-right: 16px;
+}
+
+header h1 {
+    font-size: 1.75rem;
+    color: #1f2937;
+}
+
+/* Sections (cards) */
+section {
+    background-color: #ffffff;
+    border-radius: 1rem;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+    padding: 24px;
+}
+
+section h2 {
+    font-size: 1.25rem;
+    margin-bottom: 16px;
+    color: #111827;
+}
+
+/* Buttons */
+button {
+    background-color: #ffffff;
+    border: 1px solid #d1d5db;
+    border-radius: 1rem;
+    padding: 8px 16px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+button:hover:not(:disabled) {
+    background-color: #eef2ff;
+}
+
+button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Speed display */
+#speed-display {
+    font-family: monospace;
+    font-size: 3rem;
+    color: #1e40af;
+}
+
+/* Diagnostics results */
+#diag-results {
+    background-color: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    padding: 12px;
+    overflow-y: auto;
+    height: 200px;
+    white-space: pre-wrap;
+}
+
+/* OTA progress bar */
+progress {
+    width: 100%;
+    height: 1rem;
+    border-radius: 1rem;
+    overflow: hidden;
+    appearance: none;
+}
+
+progress::-webkit-progress-bar {
+    background-color: #e5e7eb;
+}
+
+progress::-webkit-progress-value {
+    background-color: #3b82f6;
+}
+
+progress::-moz-progress-bar {
+    background-color: #3b82f6;
+}
+
+/* Responsive grid */
+main {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 24px;
+    padding: 24px;
+}
+
+@media (min-width: 768px) {
+    main {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    /* OTA panel spans two columns */
+    section:nth-of-type(3) {
+        grid-column: span 2;
+    }
+}

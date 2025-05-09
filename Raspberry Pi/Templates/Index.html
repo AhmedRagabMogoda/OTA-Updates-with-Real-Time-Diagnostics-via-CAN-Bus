@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Intelligent Vehicle Control System</title>
+    <link href="/static/css/style.css" rel="stylesheet">
+    <script src="/static/js/main.js" defer></script>
+</head>
+
+<body class="bg-gray-100 font-sans">
+    <header class="bg-white shadow-md p-4 flex items-center">
+        <img src="/static/img/car.png" alt="Car" class="h-12 mr-4">
+        <h1 class="text-2xl font-bold">Intelligent Vehicle Control System</h1>
+    </header>
+
+    <main class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Live Speed Display -->
+        <section class="bg-white rounded-2xl shadow-lg p-6">
+            <h2 class="text-xl font-semibold mb-4">Live Speed</h2>
+            <div id="speed-display" class="text-5xl font-mono text-blue-600">-- km/h</div>
+        </section>
+
+        <!-- Diagnostics Panel -->
+        <section class="bg-white rounded-2xl shadow-lg p-6">
+            <h2 class="text-xl font-semibold mb-4">Diagnostics</h2>
+            <div class="flex space-x-2 mb-4">
+                <select id="diag-service" class="flex-1 px-4 py-2 rounded-2xl border">
+                    <option value="0x10">Session Control</option>
+                    <option value="0x22">Read Data By ID</option>
+                    <option value="0x19">Read DTC</option>
+                    <option value="0x14">Clear DTC</option>
+                    <option value="0x27">Security Access</option>
+                    <option value="0x34">Request Download</option>
+                </select>
+                <input id="diag-param" type="text" placeholder="Param (e.g. ID, pwd)"
+                    class="px-4 py-2 rounded-2xl border w-40">
+                <button id="btn-diagnostics" class="px-4 py-2 rounded-2xl shadow hover:bg-blue-100">Send</button>
+            </div>
+            <div id="diag-results" class="mt-4 h-48 overflow-y-auto font-mono text-sm whitespace-pre-wrap"></div>
+        </section>
+
+        <!-- OTA Update Panel -->
+        <section class="bg-white rounded-2xl shadow-lg p-6 md:col-span-2">
+            <h2 class="text-xl font-semibold mb-4">OTA Firmware Update</h2>
+            <div class="flex items-center space-x-4 mb-4">
+                <button id="btn-check-update" class="px-4 py-2 rounded-2xl shadow hover:bg-green-100">Check for
+                    Update</button>
+                <button id="btn-update" class="px-4 py-2 rounded-2xl shadow hover:bg-indigo-100 disabled:opacity-50"
+                    disabled>Start Update</button>
+            </div>
+            <progress id="ota-progress" class="w-full h-4 rounded-full" value="0" max="100"></progress>
+            <div id="ota-status" class="mt-2 font-mono text-sm"></div>
+        </section>
+    </main>
+</body>
+
+</html>
