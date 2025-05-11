@@ -1,123 +1,148 @@
-/* Base reset */
+/* Reset & Base */
 * {
+    margin: 50;
+    padding: 50;
     box-sizing: border-box;
-    margin: 0;
-    padding: 0;
 }
 
 body {
-    font-family: 'Segoe UI', sans-serif;
-    background-color: #f3f4f6;
-    color: #111827;
+    font-family: Arial, sans-serif;
+    background: #f5f5f5;
+    color: #333;
+    line-height: 1.4;
+}
+
+.hidden {
+    display: none;
 }
 
 /* Header */
 header {
-    background-color: #ffffff;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     display: flex;
     align-items: center;
-    padding: 16px;
+    padding: 1rem 2rem;
+    background: #00457c;
+    color: #fff;
 }
 
-header img {
-    height: 48px;
-    margin-right: 16px;
+header .logo {
+    height: 50px;
+    margin-right: 1rem;
 }
 
 header h1 {
-    font-size: 1.75rem;
-    color: #1f2937;
+    font-size: 1.8rem;
 }
 
-/* Sections (cards) */
-section {
-    background-color: #ffffff;
-    border-radius: 1rem;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
-    padding: 24px;
+/* Layout */
+main {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1rem;
+    padding: 2rem;
 }
 
-section h2 {
-    font-size: 1.25rem;
-    margin-bottom: 16px;
-    color: #111827;
+/* Card */
+.card {
+    background: #fff;
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
-/* Buttons */
-button {
-    background-color: #ffffff;
-    border: 1px solid #d1d5db;
-    border-radius: 1rem;
-    padding: 8px 16px;
+.card h2 {
+    margin-bottom: 1rem;
+    color: #00457c;
+}
+
+/* Live Speed */
+#speed-display {
+    font-size: 2.5rem;
+    text-align: center;
+    padding: 1rem 0;
+    color: #007acc;
+}
+
+/* Diagnostics */
+#diag-section .controls {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+#diag-section select,
+#diag-section input,
+#diag-section button {
+    padding: 0.5rem;
     font-size: 1rem;
+}
+
+#diag-section button {
+    background: #007acc;
+    color: #fff;
+    border: none;
     cursor: pointer;
-    transition: background-color 0.2s;
+    border-radius: 4px;
 }
 
-button:hover:not(:disabled) {
-    background-color: #eef2ff;
+#diag-section button:hover {
+    background: #005fa3;
 }
 
-button:disabled {
-    opacity: 0.5;
+#diag-results {
+    max-height: 120px;
+    overflow-y: auto;
+    background: #eef6fc;
+    padding: 0.5rem;
+    border-radius: 4px;
+    margin-bottom: 1rem;
+}
+
+.sensor-reads div {
+    margin-bottom: 0.5rem;
+}
+
+.sensor-reads strong {
+    color: #00457c;
+}
+
+/* OTA Update */
+#btn-check-update,
+#btn-update {
+    padding: 0.6rem 1rem;
+    font-size: 1rem;
+    margin-right: 0.5rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#btn-check-update {
+    background: #28a745;
+    color: #fff;
+}
+
+#btn-check-update:hover {
+    background: #218838;
+}
+
+#btn-update {
+    background: #ffc107;
+    color: #333;
+}
+
+#btn-update:disabled {
+    background: #ddd;
     cursor: not-allowed;
 }
 
-/* Speed display */
-#speed-display {
-    font-family: monospace;
-    font-size: 3rem;
-    color: #1e40af;
-}
-
-/* Diagnostics results */
-#diag-results {
-    background-color: #f9fafb;
-    border: 1px solid #e5e7eb;
-    border-radius: 0.5rem;
-    padding: 12px;
-    overflow-y: auto;
-    height: 200px;
-    white-space: pre-wrap;
-}
-
-/* OTA progress bar */
 progress {
     width: 100%;
-    height: 1rem;
-    border-radius: 1rem;
-    overflow: hidden;
-    appearance: none;
+    height: 1.2rem;
+    margin: 0.5rem 0;
 }
 
-progress::-webkit-progress-bar {
-    background-color: #e5e7eb;
-}
-
-progress::-webkit-progress-value {
-    background-color: #3b82f6;
-}
-
-progress::-moz-progress-bar {
-    background-color: #3b82f6;
-}
-
-/* Responsive grid */
-main {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 24px;
-    padding: 24px;
-}
-
-@media (min-width: 768px) {
-    main {
-        grid-template-columns: repeat(2, 1fr);
-    }
-
-    /* OTA panel spans two columns */
-    section:nth-of-type(3) {
-        grid-column: span 2;
-    }
+#ota-status {
+    font-size: 0.95rem;
+    color: #555;
 }
