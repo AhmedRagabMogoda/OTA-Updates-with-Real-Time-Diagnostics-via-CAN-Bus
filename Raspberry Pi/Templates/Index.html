@@ -4,23 +4,24 @@
 <head>
     <meta charset="UTF-8" />
     <title>Intelligent Vehicle Control</title>
-    <link rel="stylesheet" href="D:/studying/GitHub/Graduation%20Project/Raspberry%20Pi/static/css/style.css" />
+    <!-- Link to CSS via Flask static route -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
 </head>
 
 <body>
     <header>
-        <img src="D:/studying/GitHub/Graduation%20Project/Raspberry%20Pi/static/img/car.png" alt="Car" class="logo" />
+        <!-- App title -->
         <h1>Intelligent Vehicle Control System</h1>
     </header>
 
     <main>
-        <!-- Live Speed -->
+        <!-- Live Speed Card -->
         <section class="card">
             <h2>Live Speed</h2>
             <div id="speed-display" class="value">-- km/h</div>
         </section>
 
-        <!-- Diagnostics -->
+        <!-- Diagnostics Card (always visible) -->
         <section id="diag-section" class="card">
             <h2>Diagnostics</h2>
             <div class="controls">
@@ -32,22 +33,37 @@
                     <option value="0x14">Clear DTC</option>
                     <option value="0x34">Request Download</option>
                 </select>
-                <input id="diag-param" placeholder="Param (hex or number)" />
+
+                <!-- Dropdown params for non-security services -->
+                <select id="diag-param-select" class="hidden">
+                    <option value="0x01">01</option>
+                    <option value="0x02">02</option>
+                    <option value="0x03">03</option>
+                </select>
+
+                <!-- Text input for Security Access password only -->
+                <input id="diag-param-input" class="hidden" type="password" placeholder="Enter password" />
+
                 <button id="btn-diagnostics">Send</button>
             </div>
+
+            <!-- Diagnostics log output -->
             <div id="diag-results" class="results"></div>
 
-            <!-- Specialized displays -->
+            <!-- Live sensor reads -->
             <div class="sensor-reads">
                 <div><strong>Temperature:</strong> <span id="temp-display">--</span> °C</div>
                 <div><strong>Distance:</strong> <span id="dist-display">--</span> cm</div>
-                <div><strong>DTCs:</strong>
-                    <pre id="dtc-display">[]</pre>
-                </div>
             </div>
         </section>
 
-        <!-- OTA Update -->
+        <!-- DTC Card (hidden until DTC data arrives) -->
+        <section id="dtc-card" class="card hidden">
+            <h2>Diagnostic Trouble Codes</h2>
+            <pre id="dtc-display">[]</pre>
+        </section>
+
+        <!-- OTA Firmware Update Card -->
         <section class="card">
             <h2>OTA Firmware Update</h2>
             <button id="btn-check-update">Check for Update</button>
@@ -57,7 +73,8 @@
         </section>
     </main>
 
-    <script src="D:/studying/GitHub/Graduation%20Project/Raspberry%20Pi/static/js/main.js"></script>
+    <!-- Include JavaScript via Flask static route -->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 </body>
 
 </html>

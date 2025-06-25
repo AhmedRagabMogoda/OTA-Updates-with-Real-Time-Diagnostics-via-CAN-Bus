@@ -1,5 +1,3 @@
-# diagnostics_client.py
-
 import time
 from CAN_Bus import CanBus
 from Utils import (
@@ -41,7 +39,6 @@ class DiagnosticsClient:
         return None
 
     def start_session(self, session_type: int) -> bool:
-        # session_type: 0 (default), 1 (sensor), 2 (control), 3 (programming)
         data = bytes([SID_DIAG_SESSION_CTRL, session_type])
         resp = self._send_and_wait(data, SID_DIAG_SESSION_CTRL + 0x40)
         return resp is not None
@@ -54,12 +51,10 @@ class DiagnosticsClient:
         return resp is not None
 
     def read_data_by_id(self, identifier: int) -> bytes | None:
-        hi = (identifier >> 8) & 0xFF
-        lo = identifier & 0xFF
+        hi, lo = (identifier >> 8) & 0xFF, identifier & 0xFF
         data = bytes([SID_READ_DATA_BY_ID, 0x00, hi, lo])
         resp = self._send_and_wait(data, SID_READ_DATA_BY_ID + 0x40)
         if resp:
-            # return data bytes after sid and sub
             return resp[2:]
         return None
 
@@ -70,8 +65,8 @@ class DiagnosticsClient:
             return None
         count = resp[2]
         dtcs = []
-        # read each DTC code frame (6 bytes)
-        for i in range(count):
+        for _ in range(count):
+            # each DTC code comes back in a single 4‐byte payload here
             resp2 = self._send_and_wait(b'', SID_READ_DTC + 0x40)
             if resp2 and len(resp2) >= 4:
                 code = (resp2[0] << 24) | (resp2[1] << 16) | (resp2[2] << 8) | resp2[3]
@@ -84,8 +79,6 @@ class DiagnosticsClient:
         return resp is not None
 
     def request_download(self) -> bool:
-        # enter programming session first
-        # assume session set externally
         data = bytes([SID_REQUEST_DOWNLOAD, 0x00])
         resp = self._send_and_wait(data, SID_REQUEST_DOWNLOAD + 0x40)
         return resp is not None
