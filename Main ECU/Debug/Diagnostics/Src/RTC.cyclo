@@ -1,0 +1,4 @@
+../Diagnostics/Src/RTC.c:20:10:RTC_GetTime	1
+../Diagnostics/Src/RTC.c:41:10:RTC_GetDate	1
+../Diagnostics/Src/RTC.c:56:6:RTC_ConfigTime	1
+../Diagnostics/Src/RTC.c:65:6:RTC_ConfigData	1

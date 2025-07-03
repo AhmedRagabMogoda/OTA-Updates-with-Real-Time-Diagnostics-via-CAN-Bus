@@ -1,0 +1,5 @@
+../Drivers/CMSIS/Include/core_cm3.h:1762:34:__NVIC_SystemReset	4	static,ignoring_inline_asm
+../Tasks/Src/OTAManagerTask.c:21:13:StartOTAManagerTask	56	static
+../Tasks/Src/OTAManagerTask.c:50:6:InitOTAManagerTask	16	static
+../Tasks/Src/OTAManagerTask.c:68:6:ReadMetadata	16	static
+../Tasks/Src/OTAManagerTask.c:87:6:WriteMetadata	64	static

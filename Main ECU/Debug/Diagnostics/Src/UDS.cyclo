@@ -1,0 +1,9 @@
+../Diagnostics/Src/UDS.c:25:6:SendResponse	3
+../Diagnostics/Src/UDS.c:40:6:SendNegative	1
+../Diagnostics/Src/UDS.c:49:6:SendPositive	1
+../Diagnostics/Src/UDS.c:58:6:ProcessSessionControl	5
+../Diagnostics/Src/UDS.c:89:6:ProcessSecurityAccess	4
+../Diagnostics/Src/UDS.c:115:6:ProcessReadDataById	5
+../Diagnostics/Src/UDS.c:159:6:ProcessReadDTC	6
+../Diagnostics/Src/UDS.c:228:6:ProcessClearDTC	3
+../Diagnostics/Src/UDS.c:246:6:ProcessRequestDownload	3

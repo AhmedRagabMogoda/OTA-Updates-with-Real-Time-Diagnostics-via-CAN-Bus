@@ -1,0 +1,3 @@
+../Tasks/Src/CANReceiveTask.c:26:13:StartCANReceiveTask	5
+../Tasks/Src/CANReceiveTask.c:60:6:InitCANReceiveTask	1
+../Tasks/Src/CANReceiveTask.c:85:6:HAL_CAN_RxFifo0MsgPendingCallback	2
