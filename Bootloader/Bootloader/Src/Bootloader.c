@@ -37,7 +37,7 @@ void ReadMetadata(void)
     {
         /** First boot: set defaults **/
     	MetaData.magic = METADATA_MAGIC;
-    	MetaData.active_app = 2U;
+    	MetaData.active_app = 1U;
     	MetaData.version = 0U;
     	MetaData.pending = 0U;
         WriteMetadata();
@@ -74,97 +74,63 @@ void WriteMetadata(void)
     HAL_FLASH_Lock();
 }
 
-//
-//#define APP_ADDRESS  (0x08008800U)   // بداية جدول متجهات التطبيق
-//
-//typedef void (*pFunc)(void);
-//
-//void JumpToApp(uint32_t Address) {
-//    uint32_t *vectable = (uint32_t *)APP_ADDRESS;
-//    pFunc    appEntry;
-//
-//    // 1. تعطيل المقاطعات و SysTick
-//    __disable_irq();
-//    HAL_RCC_DeInit();                //very important and should delete weak function
-//
-//
-//    SysTick->CTRL = 0;
-//    SysTick->LOAD = 0;
-//    SysTick->VAL  = 0;
-//
-//    // 2. ضبط MSP من أول كلمة في الجدول
-//    __set_MSP(vectable[0]);
-//
-//    // 3. إعادة توجيه VTOR إلى جدول التطبيق
-//    SCB->VTOR = APP_ADDRESS;
-//    __DSB(); __ISB();
-//
-//    // 4. جلب عنوان Reset_Handler (الكلمة الثانية) والقفز إليه
-//    appEntry = (pFunc) vectable[1];
-//    appEntry();
-//
-//    // لا يصل هنا أبداً
-//    while (1) { }
-//}
-//
-///** Jump to application at given flash address **/
-//void JumpToApp(uint32_t Address)
-//{
-//	/* Pointer to function to hold the address of the reset handler of the user App */
-//	void (*App_ResetHandler)(void);
-//
-//	uint32_t ResetHandlerAddress;
-//
-//	/* Configuration MSP of the user App by Reading value from base address of sector2 */
-//	uint32_t Local_u32MSPVal = *((volatile uint32_t*)Address);
-//	__asm volatile("MSR MSP,%0"::"r"(Local_u32MSPVal));
-//
-//	ResetHandlerAddress = *((volatile uint32_t*)(Address + 4));
-//
-//	App_ResetHandler = (void*)ResetHandlerAddress;
-//
-//	/* Vector Table Relocation */
-//	//SCB->VTOR = Address;
-//
-//	/* Jump to the user App Reset Handler */
-//	App_ResetHandler();
-//}
-//
-
-typedef void (*pFunc)(void);
-
 /**
  * @brief  Jumps to the user application located at a specified address.
  * @param  appAddress: Start address of the user application in flash.
  * @note   This function does not return.
  */
-
-void JumpToApp(uint32_t appAddress)
+void JumpToApp(uint32_t Address)
 {
-    pFunc appResetHandler;
+	/* Pointer to function to hold the address of the reset handler of the user App */
+	void (*App_ResetHandler)(void);
 
-    // 1. Deinitialize all peripherals initialized by the bootloader
-    HAL_DeInit();
+	uint32_t ResetHandlerAddress;
 
-    // 2. Disable all interrupts
-    __disable_irq();
+	/* Configuration MSP of the user App by Reading value from base address */
+	uint32_t Local_u32MSPVal = *((volatile uint32_t*)Address);
+	__asm volatile("MSR MSP,%0"::"r"(Local_u32MSPVal));
 
-    // 3. Set Main Stack Pointer (MSP) from the value at the application base
-    uint32_t mspValue = *(volatile uint32_t*)appAddress;
-    __set_MSP(mspValue);
+	ResetHandlerAddress = *((volatile uint32_t*)(Address + 4));
 
-    // 4. Relocate vector table to the application's vector table base
-    __DSB();  // ensure completion of memory operations
-    __ISB();  // flush pipeline
-    SCB->VTOR = (appAddress & SCB_VTOR_TBLOFF_Msk);
+	App_ResetHandler = (void*)ResetHandlerAddress;
 
-    // 5. Retrieve the application's Reset_Handler address
-    uint32_t resetHandlerAddr = *(volatile uint32_t*)(appAddress + 4U);
-    appResetHandler = (pFunc)resetHandlerAddr;
+	/* Vector Table Relocation */
+	//SCB->VTOR = Address;
 
-    // 6. Jump to the application's Reset_Handler (this function does not return)
-    appResetHandler();
+	/* Jump to the user App Reset Handler */
+	App_ResetHandler();
 }
+
+//void JumpToApp(uint32_t appAddress)
+//{
+//	typedef void (*pFunc)(void);
+//	pFunc appResetHandler;
+//
+//    // 1. Deinitialize all peripherals initialized by the bootloader
+//    //HAL_DeInit();
+//
+//    // 2. Disable all interrupts
+//    __disable_irq();
+//    SysTick->CTRL = 0;
+//    SysTick->LOAD = 0;
+//    SysTick->VAL  = 0;
+//
+//    // 3. Set Main Stack Pointer (MSP) from the value at the application base
+//    uint32_t mspValue = *(volatile uint32_t*)appAddress;
+//    __set_MSP(mspValue);
+//
+//    // 4. Relocate vector table to the application's vector table base
+//    __DSB();  // ensure completion of memory operations
+//    __ISB();  // flush pipeline
+//    //SCB->VTOR = (appAddress & SCB_VTOR_TBLOFF_Msk);
+//
+//    // 5. Retrieve the application's Reset_Handler address
+//    uint32_t resetHandlerAddr = *(volatile uint32_t*)(appAddress + 4U);
+//    appResetHandler = (pFunc)resetHandlerAddr;
+//
+//    // 6. Jump to the application's Reset_Handler (this function does not return)
+//    appResetHandler();
+//}
 
 
 void StartFirmwareReception(void)
