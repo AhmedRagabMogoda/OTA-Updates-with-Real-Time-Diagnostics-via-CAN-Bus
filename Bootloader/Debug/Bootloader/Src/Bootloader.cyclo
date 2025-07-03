@@ -1,0 +1,9 @@
+../Bootloader/Src/Bootloader.c:52:6:WriteMetadata	1
+../Bootloader/Src/Bootloader.c:33:6:ReadMetadata	2
+../Bootloader/Src/Bootloader.c:142:6:JumpToApp	1
+../Bootloader/Src/Bootloader.c:244:9:EraseAppRegion	1
+../Bootloader/Src/Bootloader.c:267:10:WriteChunkToFlash	3
+../Bootloader/Src/Bootloader.c:292:6:SendAck	1
+../Bootloader/Src/Bootloader.c:170:6:StartFirmwareReception	1
+../Bootloader/Src/Bootloader.c:182:6:HandleFrame	11
+../Bootloader/Src/Bootloader.c:313:6:HAL_CAN_RxFifo0MsgPendingCallback	2

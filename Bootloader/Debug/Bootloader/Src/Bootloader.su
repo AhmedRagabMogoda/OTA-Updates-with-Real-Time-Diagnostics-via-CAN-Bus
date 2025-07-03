@@ -1,0 +1,9 @@
+../Bootloader/Src/Bootloader.c:52:6:WriteMetadata	40	static
+../Bootloader/Src/Bootloader.c:33:6:ReadMetadata	4	static
+../Bootloader/Src/Bootloader.c:142:6:JumpToApp	8	static,ignoring_inline_asm
+../Bootloader/Src/Bootloader.c:244:9:EraseAppRegion	32	static
+../Bootloader/Src/Bootloader.c:267:10:WriteChunkToFlash	24	static
+../Bootloader/Src/Bootloader.c:292:6:SendAck	48	static
+../Bootloader/Src/Bootloader.c:170:6:StartFirmwareReception	0	static
+../Bootloader/Src/Bootloader.c:182:6:HandleFrame	24	static
+../Bootloader/Src/Bootloader.c:313:6:HAL_CAN_RxFifo0MsgPendingCallback	48	static
