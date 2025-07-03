@@ -1,7 +1,7 @@
 # main.py
 
 from Sensor_Listener import SensorListener
-from GUI_App import app
+from gui_app import app
 
 if __name__ == '__main__':
     # Start CAN sensor listener

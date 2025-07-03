@@ -1,6 +1,10 @@
 import time
+import threading
+
 from CAN_Bus import CanBus
 from Utils import (
+    UDS_NEG_MESSAGES,
+    UDS_POS_MESSAGES,
     DIAG_REQUEST_ID,
     DIAG_RESPONSE_ID,
     SID_DIAG_SESSION_CTRL,
@@ -82,3 +86,48 @@ class DiagnosticsClient:
         data = bytes([SID_REQUEST_DOWNLOAD, 0x00])
         resp = self._send_and_wait(data, SID_REQUEST_DOWNLOAD + 0x40)
         return resp is not None
+    
+    
+    def start_response_monitor(self, diag_queue):
+        """
+        Start a background thread that listens for any UDS response frames
+        and pushes an English text into diag_queue.
+        """
+        def _runner():
+            while True:
+                msg = self.can.recv(timeout=1.0)
+                if not msg:
+                    continue
+                arb_id, data = msg
+                if arb_id != DIAG_RESPONSE_ID or len(data) < 2:
+                    continue
+                self._handle_uds_frame(data, diag_queue)
+
+        threading.Thread(target=_runner, daemon=True).start()
+
+    def _handle_uds_frame(self, data: bytes, diag_queue):
+        """
+        Decode one UDS response frame (positive or negative)
+        and enqueue a human-readable English message.
+        """
+        first = data[0]
+        # Negative response
+        if first == 0x7F and len(data) >= 3:
+            sid, nrc = data[1], data[2]
+            text = UDS_NEG_MESSAGES.get(sid, {}).get(
+                nrc,
+                f"Unknown negative response: SID=0x{sid:02X}, NRC=0x{nrc:02X}"
+            )
+            diag_queue.put(f"[UDS NEG] SID=0x{sid:02X}, NRC=0x{nrc:02X} ? {text}")
+            return
+
+        # Positive response: first byte = SID + 0x40
+        sid = first - 0x40
+        sub = data[1]
+        pos_map = UDS_POS_MESSAGES.get(sid, {})
+        text = pos_map.get(sub) or pos_map.get(
+            None,
+            f"Unknown positive response: SID=0x{sid:02X}, Sub=0x{sub:02X}"
+        )
+        diag_queue.put(f"[UDS POS] SID=0x{sid:02X} ? {text}")
+        

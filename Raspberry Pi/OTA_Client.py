@@ -1,100 +1,110 @@
-# ota_client.py
-
 import time
+import threading
+
 from CAN_Bus import CanBus
 from Utils import (
     UPDATE_FRAME_ID,
     UPDATE_ACK_ID,
+    START_UPDATE,
     CODE_NEXT,
     CODE_DONE,
     CODE_ERROR,
-    DEFAULT_TIMEOUT,
-    OTA_DONE_TIMEOUT
 )
 
 class OTAClient:
     """
     OTA firmware upload over CAN to STM32 Bootloader.
-    Requires Bootloader to be in programming session (via DiagnosticsClient.request_download()).
-    Yields integer progress percentages after each 1 KB page is acknowledged.
+    Listens for START_UPDATE interrupt and then streams the .hex/text file
+    in configurable chunks over CAN, converting hex strings to raw bytes,
+    using a single initial CODE_NEXT ACK, and then sends all data frames with
+    a delay between each frame to prevent network drops.
     """
-    def __init__(self, can_bus: CanBus, chunk_size=1024, frame_size=8,
-                 timeout=DEFAULT_TIMEOUT, done_timeout=OTA_DONE_TIMEOUT):
+    def __init__(self, can_bus: CanBus, chunk_size=1024, frame_size=8, inter_frame_delay=0.05):
         self.can = can_bus
         self.chunk_size = chunk_size
         self.frame_size = frame_size
-        self.timeout = timeout
-        self.done_timeout = done_timeout
+        self.delay = inter_frame_delay
 
     def upload(self, firmware_path):
         """
-        Upload firmware file in pages of chunk_size.
-        Yields progress percentage (0-100) after each page ACK.
+        Upload the firmware file in chunks.
+        - Reads a hex-formatted file and converts to raw bytes
+        - Waits one CODE_NEXT ACK after the size frame
+        - Streams all data frames with a delay after each frame
+        Yields progress percentage after each chunk sent.
+        Raises RuntimeError on CODE_ERROR or unexpected final code.
         """
-        # Load entire firmware binary
-        with open(firmware_path, 'rb') as f:
-            firmware = f.read()
+        # Read hex representation, strip whitespace, convert to bytes
+        with open(firmware_path, 'r') as f:
+            hex_str = f.read().strip().replace('\n', '').replace(' ', '')
+        firmware = bytes.fromhex(hex_str)
 
-        total_size = len(firmware)
-        total_chunks = (total_size + self.chunk_size - 1) // self.chunk_size
+        total_chunks = (len(firmware) + self.chunk_size - 1) // self.chunk_size
 
-        # 1) Send size frame and wait for CODE_NEXT
-        size_payload = bytes([total_chunks]) + b'\x00' * (self.frame_size - 1)
-        self.can.send(UPDATE_FRAME_ID, size_payload)
-        if self._wait_ack(CODE_NEXT, timeout=self.timeout) != CODE_NEXT:
-            raise RuntimeError('Bootloader did not ACK size frame')
+        # Send size frame and wait for initial ACK
+        size_frame = bytes([total_chunks]) + b'\x00' * (self.frame_size - 1)
+        self.can.send(UPDATE_FRAME_ID, size_frame)
+        time.sleep(self.delay)
 
-        # 2) Send each 1 KB chunk
+        code = self._wait_ack_blocking()
+        if code == CODE_ERROR:
+            raise RuntimeError('Bootloader returned CODE_ERROR on size frame')
+        if code != CODE_NEXT:
+            raise RuntimeError(f'Unexpected ACK after size frame: {code}')
+
+        # Stream all chunks, frame by frame, with delay after each frame
         for idx in range(total_chunks):
             start = idx * self.chunk_size
             chunk = firmware[start:start + self.chunk_size]
-            # pad last chunk if smaller
             if len(chunk) < self.chunk_size:
                 chunk += b'\xFF' * (self.chunk_size - len(chunk))
 
-            # send chunk in frame_size-byte CAN frames
             for offset in range(0, self.chunk_size, self.frame_size):
                 frame = chunk[offset:offset + self.frame_size]
                 self.can.send(UPDATE_FRAME_ID, frame)
-                time.sleep(0.001)
+                time.sleep(self.delay)
 
-            # wait for ACK for this chunk
-            code = self._wait_ack(timeout=self.timeout)
-            if code == CODE_NEXT:
-                # calculate and yield progress
-                progress = int((idx + 1) * 100 / total_chunks)
-                yield progress
-            elif code == CODE_ERROR:
-                # retry same chunk
-                idx -= 1
-                continue
-            else:
-                raise RuntimeError(f'Unexpected ACK code: {code}')
+            progress = int((idx + 1) * 100 / total_chunks)
+            yield progress
 
-        # 3) Wait for final DONE ACK
-        final = self._wait_ack(CODE_DONE, timeout=self.done_timeout)
+        # Wait for final DONE code from bootloader
+        final = self._wait_ack_blocking()
+        if final == CODE_ERROR:
+            raise RuntimeError('CODE_ERROR at final stage')
         if final != CODE_DONE:
-            raise RuntimeError('Did not receive final DONE ACK')
+            raise RuntimeError(f'Expected CODE_DONE, got {final}')
 
-        # ensure 100% at end
         yield 100
 
-    def _wait_ack(self, expected=None, timeout=None):
+    def _wait_ack_blocking(self):
         """
-        Wait for an ACK frame from Bootloader.
-        :param expected: specific code to match or None
-        :param timeout: seconds to wait
-        :return: received code or None
+        Wait indefinitely for a valid ACK message on UPDATE_ACK_ID.
+        Returns the ACK code as an integer.
         """
-        deadline = time.time() + (timeout if timeout is not None else self.timeout)
-        while time.time() < deadline:
-            msg = self.can.recv(timeout=0.1)
+        while True:
+            msg = self.can.recv(timeout=None)
             if not msg:
                 continue
             arb_id, data = msg
-            if arb_id != UPDATE_ACK_ID or not data:
-                continue
-            code = data[0]
-            if expected is None or code == expected:
-                return code
-        return None
+            if arb_id == UPDATE_ACK_ID and data:
+                return data[0]
+
+    def watch_for_start(self, firmware_path):
+        """
+        Run a background thread that waits for START_UPDATE,
+        then begins the firmware upload process.
+        """
+        def _runner():
+            while True:
+                msg = self.can.recv(timeout=None)
+                if not msg:
+                    continue
+                arb_id, data = msg
+                if arb_id == UPDATE_ACK_ID and data and data[0] == START_UPDATE:
+                    try:
+                        for pct in self.upload(firmware_path):
+                            print(f"Upload progress: {pct}%")
+                    except Exception as e:
+                        print(f"OTA failed: {e}")
+
+        threading.Thread(target=_runner, daemon=False).start()
