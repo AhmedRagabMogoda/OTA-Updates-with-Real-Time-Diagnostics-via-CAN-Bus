@@ -1,0 +1,3 @@
+../Tasks/Src/UARTTransmitTask.c:21:13:StartUARTTransmitTask	2
+../Tasks/Src/UARTTransmitTask.c:40:6:InitUARTTransmitTask	3
+../Tasks/Src/UARTTransmitTask.c:64:6:SendSensorFrame	1

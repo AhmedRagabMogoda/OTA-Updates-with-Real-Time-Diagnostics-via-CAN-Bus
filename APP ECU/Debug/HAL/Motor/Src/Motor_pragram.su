@@ -1,0 +1,5 @@
+../HAL/Motor/Src/Motor_pragram.c:22:6:Motor_SetSpeed	0	static
+../HAL/Motor/Src/Motor_pragram.c:32:6:Motor_Forward	8	static
+../HAL/Motor/Src/Motor_pragram.c:39:6:Motor_Backward	8	static
+../HAL/Motor/Src/Motor_pragram.c:46:6:Motor_Stop	8	static
+../HAL/Motor/Src/Motor_pragram.c:14:6:Motor_Init	8	static

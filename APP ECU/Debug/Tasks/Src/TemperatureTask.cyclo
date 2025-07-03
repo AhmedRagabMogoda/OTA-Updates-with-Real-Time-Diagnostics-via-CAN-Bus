@@ -1,0 +1,2 @@
+../Tasks/Src/TemperatureTask.c:25:13:StartTemperatureSensorTask	1
+../Tasks/Src/TemperatureTask.c:62:6:InitTemperatureSensorTask	1

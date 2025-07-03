@@ -1,0 +1,3 @@
+../Tasks/Src/UltrasonicTask.c:29:13:StartUltrasonicTask	2
+../Tasks/Src/UltrasonicTask.c:82:6:InitUltrasonicTask	1
+../Tasks/Src/UltrasonicTask.c:105:6:HAL_TIM_IC_CaptureCallback	3

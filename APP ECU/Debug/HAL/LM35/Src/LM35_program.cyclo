@@ -1,0 +1,5 @@
+../HAL/LM35/Src/LM35_program.c:20:6:LM35_Init	1
+../HAL/LM35/Src/LM35_program.c:26:6:LM35_StartConversion	2
+../HAL/LM35/Src/LM35_program.c:34:6:LM35_ProcessADCValue	1
+../HAL/LM35/Src/LM35_program.c:42:7:LM35_GetTemperature	1
+../HAL/LM35/Src/LM35_program.c:47:6:HAL_ADC_ConvCpltCallback	2

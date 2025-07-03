@@ -1,0 +1,2 @@
+../Tasks/Src/MotorTask.c:43:13:StartMotorTask	16	static
+../Tasks/Src/MotorTask.c:102:6:InitMotorTask	16	static

@@ -1,0 +1,3 @@
+../Tasks/Src/UARTTransmitTask.c:21:13:StartUARTTransmitTask	16	static
+../Tasks/Src/UARTTransmitTask.c:40:6:InitUARTTransmitTask	16	static,ignoring_inline_asm
+../Tasks/Src/UARTTransmitTask.c:64:6:SendSensorFrame	16	static

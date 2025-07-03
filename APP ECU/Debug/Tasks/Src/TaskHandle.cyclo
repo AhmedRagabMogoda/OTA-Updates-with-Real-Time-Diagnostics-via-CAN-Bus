@@ -1,0 +1,2 @@
+../Tasks/Src/TaskHandle.c:12:6:FreeRTOS_Init	1
+../Tasks/Src/TaskHandle.c:24:6:Start_Scheduler	1
