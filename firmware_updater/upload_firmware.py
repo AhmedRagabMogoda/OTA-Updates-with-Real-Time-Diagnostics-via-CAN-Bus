@@ -1,36 +1,44 @@
-#!/usr/bin/env python3
-"""
-Upload a local firmware file to S3, then bump and update a JSON config.
-Only the 'latest' (integer) and 'url' (string) fields are maintained in the JSON.
-Edit the DEFINE_* constants below before running.
-"""
-
 import os
 import json
 import boto3
 from botocore.exceptions import ClientError
 
-# -------------------------------
-# Configuration Constants (#define)
-# -------------------------------
-DEFINE_S3_BUCKET     = 'my-vehicle-firmware'    # S3 bucket name
-DEFINE_REGION        = 'eu-north-1'              # AWS region for the bucket
-DEFINE_JSON_KEY      = 'firmware/version.json'  # JSON config path inside the bucket
-DEFINE_UPLOAD_FOLDER = 'firmware'               # Folder in the bucket to upload firmware files
-DEFINE_AWS_PROFILE   = 'default'                # AWS CLI profile name
+# ----------------------------
+# File paths and AWS settings
+# ----------------------------
+INPUT_FILE_PATH = r"d:\\studying\\GitHub\\Graduation Project\\firmware_updater\\Application.txt"
+OUTPUT_FILE_PATH = r"d:\\studying\\GitHub\\Graduation Project\\firmware_updater\\Binary.txt"
 
-# Full path to the local firmware file on your machine:
-DEFINE_LOCAL_FILE    = r'd:\studying\GitHub\Graduation Project\firmware_updater\Binary.txt'
+DEFINE_S3_BUCKET     = 'my-vehicle-firmware'    # S3 bucket name */
+DEFINE_REGION        = 'eu-north-1'             # AWS region */
+DEFINE_JSON_KEY      = 'firmware/version.json'  # Path for JSON config in S3 */
+DEFINE_UPLOAD_FOLDER = 'firmware'               # Folder in S3 for firmware files */
+DEFINE_AWS_PROFILE   = 'default'                # AWS CLI profile name */
 
-# Initialize AWS session and S3 client
+DEFINE_LOCAL_FILE    = OUTPUT_FILE_PATH          # Local path to binary file */
+
+# ----------------------------
+# Initialize AWS session
+# ----------------------------
 session = boto3.Session(profile_name=DEFINE_AWS_PROFILE, region_name=DEFINE_REGION)
 s3 = session.client('s3')
+
+def remove_spaces_and_newlines(input_path: str, output_path: str) -> None:
+    """
+    Read input file, remove spaces and newline characters, write result to output file.
+    """
+    with open(input_path, 'r') as infile:
+        content = infile.read()
+    processed = content.replace(' ', '').replace('\n', '')
+    with open(output_path, 'w') as outfile:
+        outfile.write(processed)
+    print("Spaces and newlines removed successfully.")
 
 
 def fetch_current_config(bucket: str, key: str) -> dict:
     """
-    Download and parse the current JSON configuration from S3.
-    Returns defaults {'latest': '0.0.0', 'url': ''} if the object does not exist.
+    Download current JSON configuration from S3.
+    Return default if the object does not exist.
     """
     try:
         response = s3.get_object(Bucket=bucket, Key=key)
@@ -47,7 +55,7 @@ def fetch_current_config(bucket: str, key: str) -> dict:
 
 def upload_file_to_s3(local_path: str, bucket: str, folder: str) -> str:
     """
-    Upload a local file to the specified folder in S3 and return its public URL.
+    Upload a local file to the specified S3 folder and return its public URL.
     """
     filename = os.path.basename(local_path)
     s3_key = f"{folder}/{filename}"
@@ -55,9 +63,9 @@ def upload_file_to_s3(local_path: str, bucket: str, folder: str) -> str:
     return f"https://{bucket}.s3.{DEFINE_REGION}.amazonaws.com/{s3_key}"
 
 
-def update_and_upload_config(bucket: str, key: str, new_latest: str, new_url: str):
+def update_and_upload_config(bucket: str, key: str, new_latest: str, new_url: str) -> None:
     """
-    Create and upload a JSON object with only 'latest' and 'url' keys.
+    Create and upload JSON payload containing only 'latest' and 'url'.
     """
     payload = {'latest': new_latest, 'url': new_url}
     s3.put_object(
@@ -69,30 +77,30 @@ def update_and_upload_config(bucket: str, key: str, new_latest: str, new_url: st
 
 
 def main():
+    """
+    Process input file, upload firmware, bump version, and update JSON config.
+    """
+    remove_spaces_and_newlines(INPUT_FILE_PATH, OUTPUT_FILE_PATH)
+
     try:
-        # 1. Retrieve current configuration
         config = fetch_current_config(DEFINE_S3_BUCKET, DEFINE_JSON_KEY)
         print(f"Current config -> latest: {config['latest']}, url: {config['url']}")
 
-        # 2. Upload the local firmware file
         print(f"Uploading: {DEFINE_LOCAL_FILE}")
         new_url = upload_file_to_s3(DEFINE_LOCAL_FILE, DEFINE_S3_BUCKET, DEFINE_UPLOAD_FOLDER)
         print(f"Upload complete. New URL: {new_url}")
 
-        # 3. Parse and increment semantic version MAJOR.MINOR.PATCH
         parts = config['latest'].split('.')
         major, minor, patch = (int(p) for p in (parts + ['0', '0', '0'])[:3])
         patch += 1
         new_latest = f"{major}.{minor}.{patch}"
 
-        # 4. Update and upload the JSON config
         print(f"Updating JSON config at {DEFINE_JSON_KEY} to version {new_latest}")
         update_and_upload_config(DEFINE_S3_BUCKET, DEFINE_JSON_KEY, new_latest, new_url)
 
         print(f"Success: Config updated to latest={new_latest}")
     except Exception as error:
         print(f"Error during operation: {error}")
-
 
 if __name__ == '__main__':
     main()
