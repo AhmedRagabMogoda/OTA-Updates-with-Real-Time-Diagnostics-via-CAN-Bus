@@ -1,3 +1,3 @@
-../Tasks/Src/UARTReceiveTask.c:24:13:StartUARTReceiveTask	10
+../Tasks/Src/UARTReceiveTask.c:24:13:StartUARTReceiveTask	8
 ../Tasks/Src/UARTReceiveTask.c:100:6:InitUARTReceiveTask	1
 ../Tasks/Src/UARTReceiveTask.c:119:6:HAL_UART_RxCpltCallback	3

@@ -1,4 +1,4 @@
 ../Diagnostics/Src/RTC.c:20:10:RTC_GetTime	16	static
-../Diagnostics/Src/RTC.c:41:10:RTC_GetDate	24	static
-../Diagnostics/Src/RTC.c:56:6:RTC_ConfigTime	24	static
-../Diagnostics/Src/RTC.c:65:6:RTC_ConfigData	24	static
+../Diagnostics/Src/RTC.c:41:10:RTC_GetDate	16	static
+../Diagnostics/Src/RTC.c:56:6:RTC_ConfigTime	16	static
+../Diagnostics/Src/RTC.c:65:6:RTC_ConfigData	16	static

@@ -1,3 +1,3 @@
-../Tasks/Src/CANReceiveTask.c:26:13:StartCANReceiveTask	56	static
+../Tasks/Src/CANReceiveTask.c:26:13:StartCANReceiveTask	48	static
 ../Tasks/Src/CANReceiveTask.c:60:6:InitCANReceiveTask	16	static
-../Tasks/Src/CANReceiveTask.c:85:6:HAL_CAN_RxFifo0MsgPendingCallback	56	static,ignoring_inline_asm
+../Tasks/Src/CANReceiveTask.c:85:6:HAL_CAN_RxFifo0MsgPendingCallback	48	static,ignoring_inline_asm

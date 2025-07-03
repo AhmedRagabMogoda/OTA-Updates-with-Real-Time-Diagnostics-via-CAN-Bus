@@ -1,2 +1,2 @@
-../Tasks/Src/CANTransmitTask.c:21:13:StartCANTransmitTask	64	static
+../Tasks/Src/CANTransmitTask.c:21:13:StartCANTransmitTask	56	static
 ../Tasks/Src/CANTransmitTask.c:48:6:InitCANTransmitTask	16	static

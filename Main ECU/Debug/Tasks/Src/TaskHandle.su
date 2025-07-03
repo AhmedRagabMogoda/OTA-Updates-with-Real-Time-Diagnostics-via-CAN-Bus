@@ -1,2 +1,2 @@
 ../Tasks/Src/TaskHandle.c:11:6:FreeRTOS_Init	8	static
-../Tasks/Src/TaskHandle.c:21:6:Start_Scheduler	8	static
+../Tasks/Src/TaskHandle.c:21:6:Start_Scheduler	0	static

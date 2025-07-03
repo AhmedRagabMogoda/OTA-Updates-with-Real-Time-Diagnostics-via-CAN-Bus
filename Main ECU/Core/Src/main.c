@@ -99,6 +99,7 @@ int main(void)
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
 
+
   /* configure three banks */
   CAN_Filter_Config();
 
@@ -357,6 +358,12 @@ void CAN_Filter_Config(void)
     /* Filter for CAN_ID_3 in bank 2 */
     filter.FilterBank = 2;
     filter.FilterIdHigh   = (uint16_t)(SENSOR_TEMP_ID << 5);
+    filter.FilterIdLow    =  0x0000;
+    HAL_CAN_ConfigFilter(&hcan, &filter);
+
+    /* Filter for CAN_ID_4 in bank 3 */
+    filter.FilterBank = 3;
+    filter.FilterIdHigh   = (uint16_t)(SPEED_ID << 5);
     filter.FilterIdLow    =  0x0000;
     HAL_CAN_ConfigFilter(&hcan, &filter);
 }

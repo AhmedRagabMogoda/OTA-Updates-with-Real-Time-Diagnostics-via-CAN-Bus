@@ -1,5 +1,4 @@
-../Drivers/CMSIS/Include/core_cm3.h:1762:34:__NVIC_SystemReset	1
-../Tasks/Src/OTAManagerTask.c:21:13:StartOTAManagerTask	1
 ../Tasks/Src/OTAManagerTask.c:50:6:InitOTAManagerTask	1
-../Tasks/Src/OTAManagerTask.c:68:6:ReadMetadata	2
 ../Tasks/Src/OTAManagerTask.c:87:6:WriteMetadata	1
+../Tasks/Src/OTAManagerTask.c:68:6:ReadMetadata	2
+../Tasks/Src/OTAManagerTask.c:21:13:StartOTAManagerTask	2

@@ -1,9 +1,9 @@
-../Diagnostics/Src/UDS.c:25:6:SendResponse	40	static
-../Diagnostics/Src/UDS.c:40:6:SendNegative	24	static
-../Diagnostics/Src/UDS.c:49:6:SendPositive	24	static
-../Diagnostics/Src/UDS.c:58:6:ProcessSessionControl	16	static
-../Diagnostics/Src/UDS.c:89:6:ProcessSecurityAccess	24	static
-../Diagnostics/Src/UDS.c:115:6:ProcessReadDataById	32	static
+../Diagnostics/Src/UDS.c:25:6:SendResponse	24	static
+../Diagnostics/Src/UDS.c:40:6:SendNegative	16	static
+../Diagnostics/Src/UDS.c:49:6:SendPositive	16	static
+../Diagnostics/Src/UDS.c:58:6:ProcessSessionControl	0	static
+../Diagnostics/Src/UDS.c:89:6:ProcessSecurityAccess	0	static
+../Diagnostics/Src/UDS.c:115:6:ProcessReadDataById	16	static
 ../Diagnostics/Src/UDS.c:159:6:ProcessReadDTC	184	static
-../Diagnostics/Src/UDS.c:228:6:ProcessClearDTC	16	static
+../Diagnostics/Src/UDS.c:228:6:ProcessClearDTC	8	static
 ../Diagnostics/Src/UDS.c:246:6:ProcessRequestDownload	16	static
