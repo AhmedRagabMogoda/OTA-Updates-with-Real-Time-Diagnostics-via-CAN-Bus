@@ -4,6 +4,6 @@
 ../Diagnostics/Src/UDS.c:58:6:ProcessSessionControl	0	static
 ../Diagnostics/Src/UDS.c:89:6:ProcessSecurityAccess	0	static
 ../Diagnostics/Src/UDS.c:115:6:ProcessReadDataById	16	static
-../Diagnostics/Src/UDS.c:159:6:ProcessReadDTC	184	static
-../Diagnostics/Src/UDS.c:228:6:ProcessClearDTC	8	static
-../Diagnostics/Src/UDS.c:246:6:ProcessRequestDownload	16	static
+../Diagnostics/Src/UDS.c:158:6:ProcessReadDTC	144	static
+../Diagnostics/Src/UDS.c:194:6:ProcessClearDTC	8	static
+../Diagnostics/Src/UDS.c:212:6:ProcessRequestDownload	16	static

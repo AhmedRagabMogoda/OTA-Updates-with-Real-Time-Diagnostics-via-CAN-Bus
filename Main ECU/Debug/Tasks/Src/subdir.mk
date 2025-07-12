@@ -10,8 +10,7 @@ C_SRCS += \
 ../Tasks/Src/ControlTask.c \
 ../Tasks/Src/DiagnosticsTask.c \
 ../Tasks/Src/OTAManagerTask.c \
-../Tasks/Src/TaskHandle.c \
-../Tasks/Src/UARTReceiveTask.c 
+../Tasks/Src/TaskHandle.c 
 
 OBJS += \
 ./Tasks/Src/CANReceiveTask.o \
@@ -19,8 +18,7 @@ OBJS += \
 ./Tasks/Src/ControlTask.o \
 ./Tasks/Src/DiagnosticsTask.o \
 ./Tasks/Src/OTAManagerTask.o \
-./Tasks/Src/TaskHandle.o \
-./Tasks/Src/UARTReceiveTask.o 
+./Tasks/Src/TaskHandle.o 
 
 C_DEPS += \
 ./Tasks/Src/CANReceiveTask.d \
@@ -28,8 +26,7 @@ C_DEPS += \
 ./Tasks/Src/ControlTask.d \
 ./Tasks/Src/DiagnosticsTask.d \
 ./Tasks/Src/OTAManagerTask.d \
-./Tasks/Src/TaskHandle.d \
-./Tasks/Src/UARTReceiveTask.d 
+./Tasks/Src/TaskHandle.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes
@@ -39,7 +36,7 @@ Tasks/Src/%.o Tasks/Src/%.su Tasks/Src/%.cyclo: ../Tasks/Src/%.c Tasks/Src/subdi
 clean: clean-Tasks-2f-Src
 
 clean-Tasks-2f-Src:
-	-$(RM) ./Tasks/Src/CANReceiveTask.cyclo ./Tasks/Src/CANReceiveTask.d ./Tasks/Src/CANReceiveTask.o ./Tasks/Src/CANReceiveTask.su ./Tasks/Src/CANTransmitTask.cyclo ./Tasks/Src/CANTransmitTask.d ./Tasks/Src/CANTransmitTask.o ./Tasks/Src/CANTransmitTask.su ./Tasks/Src/ControlTask.cyclo ./Tasks/Src/ControlTask.d ./Tasks/Src/ControlTask.o ./Tasks/Src/ControlTask.su ./Tasks/Src/DiagnosticsTask.cyclo ./Tasks/Src/DiagnosticsTask.d ./Tasks/Src/DiagnosticsTask.o ./Tasks/Src/DiagnosticsTask.su ./Tasks/Src/OTAManagerTask.cyclo ./Tasks/Src/OTAManagerTask.d ./Tasks/Src/OTAManagerTask.o ./Tasks/Src/OTAManagerTask.su ./Tasks/Src/TaskHandle.cyclo ./Tasks/Src/TaskHandle.d ./Tasks/Src/TaskHandle.o ./Tasks/Src/TaskHandle.su ./Tasks/Src/UARTReceiveTask.cyclo ./Tasks/Src/UARTReceiveTask.d ./Tasks/Src/UARTReceiveTask.o ./Tasks/Src/UARTReceiveTask.su
+	-$(RM) ./Tasks/Src/CANReceiveTask.cyclo ./Tasks/Src/CANReceiveTask.d ./Tasks/Src/CANReceiveTask.o ./Tasks/Src/CANReceiveTask.su ./Tasks/Src/CANTransmitTask.cyclo ./Tasks/Src/CANTransmitTask.d ./Tasks/Src/CANTransmitTask.o ./Tasks/Src/CANTransmitTask.su ./Tasks/Src/ControlTask.cyclo ./Tasks/Src/ControlTask.d ./Tasks/Src/ControlTask.o ./Tasks/Src/ControlTask.su ./Tasks/Src/DiagnosticsTask.cyclo ./Tasks/Src/DiagnosticsTask.d ./Tasks/Src/DiagnosticsTask.o ./Tasks/Src/DiagnosticsTask.su ./Tasks/Src/OTAManagerTask.cyclo ./Tasks/Src/OTAManagerTask.d ./Tasks/Src/OTAManagerTask.o ./Tasks/Src/OTAManagerTask.su ./Tasks/Src/TaskHandle.cyclo ./Tasks/Src/TaskHandle.d ./Tasks/Src/TaskHandle.o ./Tasks/Src/TaskHandle.su
 
 .PHONY: clean-Tasks-2f-Src
 

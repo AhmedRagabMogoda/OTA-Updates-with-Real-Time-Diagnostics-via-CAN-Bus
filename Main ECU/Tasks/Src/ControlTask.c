@@ -69,7 +69,7 @@ static void StartControlTask(void *pvParameters)
                         /** Trigger DTC for obstacle **/
                         WriteDTCListToFlash(DTC_ULTRASONIC_BLOCKED);
                     }
-                    else if (LatestDist == 0)
+                    else if (LatestDist == 0xFFFF)
                     {
                         WriteDTCListToFlash(DTC_ULTRASONIC_FAILURE);
                     }

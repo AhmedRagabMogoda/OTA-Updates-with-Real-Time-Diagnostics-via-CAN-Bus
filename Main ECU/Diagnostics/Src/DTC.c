@@ -53,6 +53,8 @@ void ClearDTCListFlash(void)
     HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD, FLASH_DTC_PAGE_ADDR, 0U);
 
     HAL_FLASH_Lock();
+
+    HAL_GPIO_WritePin(GPIOA, GPIO_PIN_1, GPIO_PIN_RESET);
 }
 
 /**
@@ -101,4 +103,6 @@ void WriteDTCListToFlash(uint32_t NewDTC)
 
         HAL_FLASH_Lock();
     }
+
+    HAL_GPIO_WritePin(GPIOA, GPIO_PIN_1, GPIO_PIN_SET);
 }

@@ -50,6 +50,5 @@ void InitCANTransmitTask(void);
 void InitControlTask(void);
 void InitDiagnosticsTask(void);
 void InitOTAManagerTask(void);
-void InitUARTReceiveTask(void);
 
 #endif /* INC_TASKHANDLE_H_ */

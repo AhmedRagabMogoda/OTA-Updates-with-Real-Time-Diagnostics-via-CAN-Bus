@@ -32,7 +32,6 @@
 "./Tasks/Src/DiagnosticsTask.o"
 "./Tasks/Src/OTAManagerTask.o"
 "./Tasks/Src/TaskHandle.o"
-"./Tasks/Src/UARTReceiveTask.o"
 "./ThridParty/FreeRTOS/croutine.o"
 "./ThridParty/FreeRTOS/event_groups.o"
 "./ThridParty/FreeRTOS/list.o"

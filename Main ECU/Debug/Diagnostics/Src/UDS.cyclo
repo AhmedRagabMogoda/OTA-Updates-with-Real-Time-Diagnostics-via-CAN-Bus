@@ -4,6 +4,6 @@
 ../Diagnostics/Src/UDS.c:58:6:ProcessSessionControl	4
 ../Diagnostics/Src/UDS.c:89:6:ProcessSecurityAccess	4
 ../Diagnostics/Src/UDS.c:115:6:ProcessReadDataById	4
-../Diagnostics/Src/UDS.c:159:6:ProcessReadDTC	5
-../Diagnostics/Src/UDS.c:228:6:ProcessClearDTC	3
-../Diagnostics/Src/UDS.c:246:6:ProcessRequestDownload	3
+../Diagnostics/Src/UDS.c:158:6:ProcessReadDTC	4
+../Diagnostics/Src/UDS.c:194:6:ProcessClearDTC	3
+../Diagnostics/Src/UDS.c:212:6:ProcessRequestDownload	3

@@ -15,7 +15,6 @@ void FreeRTOS_Init(void)
     InitControlTask();       /** Sensor processing and motor safety **/
     InitDiagnosticsTask();   /** UDS diagnostic services **/
     InitOTAManagerTask();    /** Manage OTA trigger **/
-    InitUARTReceiveTask();
 }
 
 void Start_Scheduler(void)
