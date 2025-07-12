@@ -6,7 +6,7 @@ from botocore.exceptions import ClientError
 # ----------------------------
 # File paths and AWS settings
 # ----------------------------
-INPUT_FILE_PATH = r"d:\\studying\\GitHub\\Graduation Project\\firmware_updater\\Application.txt"
+INPUT_FILE_PATH = r"d:\\studying\\GitHub\\Graduation Project\\firmware_updater\\Application2.txt"
 OUTPUT_FILE_PATH = r"d:\\studying\\GitHub\\Graduation Project\\firmware_updater\\Binary.txt"
 
 DEFINE_S3_BUCKET     = 'my-vehicle-firmware'    # S3 bucket name */
