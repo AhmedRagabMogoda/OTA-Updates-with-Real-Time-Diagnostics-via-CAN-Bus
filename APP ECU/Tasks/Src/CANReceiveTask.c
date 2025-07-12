@@ -8,7 +8,6 @@
 
 #include "CANReceiveTask.h"
 
-
 /** Queue handle for CAN Rx messages **/
 QueueHandle_t xCanRxQueue = NULL;
 
