@@ -33,8 +33,6 @@
 "./Tasks/Src/MotorTask.o"
 "./Tasks/Src/TaskHandle.o"
 "./Tasks/Src/TemperatureTask.o"
-"./Tasks/Src/UARTReceiveTask.o"
-"./Tasks/Src/UARTTransmitTask.o"
 "./Tasks/Src/UltrasonicTask.o"
 "./ThridParty/FreeRTOS/croutine.o"
 "./ThridParty/FreeRTOS/event_groups.o"

@@ -37,7 +37,7 @@ void Ultrasonic_Trigger(void)
 {
     /** Send 10us pulse on TRIG **/
     HAL_GPIO_WritePin(Trig_Port, Trig_Pin, GPIO_PIN_SET);
-    for (volatile uint32_t i = 0; i < 1600; i++);   /* ~10us delay at 16MHz CPU */
+    for (volatile uint32_t i = 0; i < 160; i++);   /* ~10us delay at 64MHz CPU */
     HAL_GPIO_WritePin(Trig_Port, Trig_Pin, GPIO_PIN_RESET);
 }
 

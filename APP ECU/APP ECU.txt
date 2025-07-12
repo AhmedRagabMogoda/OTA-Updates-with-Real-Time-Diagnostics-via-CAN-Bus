@@ -1,0 +1,96 @@
+Configuration	APP ECU
+STM32CubeMX 	6.12.1
+Date	07/12/2025
+MCU	STM32F103C8Tx
+
+
+
+PERIPHERALS	MODES	FUNCTIONS	PINS
+ADC1	IN7	ADC1_IN7	PA7
+CAN	Activated	CAN_RX	PA11
+CAN	Activated	CAN_TX	PA12
+SYS	Serial Wire	SYS_JTCK-SWCLK	PA14
+SYS	Serial Wire	SYS_JTMS-SWDIO	PA13
+SYS	TIM1	SYS_VS_tim1	VP_SYS_VS_tim1
+TIM2	PWM Generation CH1	TIM2_CH1	PA15
+TIM2	PWM Generation CH2	TIM2_CH2	PB3
+TIM3	Input Capture direct mode	TIM3_CH1	PA6
+USART1	Asynchronous	USART1_RX	PA10
+USART1	Asynchronous	USART1_TX	PA9
+
+
+
+Pin Nb	PINs	FUNCTIONs	LABELs
+16	PA6	TIM3_CH1	
+17	PA7	ADC1_IN7	
+25	PB12	GPIO_Output	
+26	PB13	GPIO_Output	
+27	PB14	GPIO_Output	
+28	PB15	GPIO_Output	
+29	PA8	GPIO_Output	
+30	PA9	USART1_TX	
+31	PA10	USART1_RX	
+32	PA11	CAN_RX	
+33	PA12	CAN_TX	
+34	PA13	SYS_JTMS-SWDIO	
+37	PA14	SYS_JTCK-SWCLK	
+38	PA15	TIM2_CH1	
+39	PB3	TIM2_CH2	
+PERIPHERALS	MODES	FUNCTIONS	PINS
+ADC1	IN7	ADC1_IN7	PA7
+CAN	Activated	CAN_RX	PA11
+CAN	Activated	CAN_TX	PA12
+SYS	Serial Wire	SYS_JTCK-SWCLK	PA14
+SYS	Serial Wire	SYS_JTMS-SWDIO	PA13
+SYS	TIM1	SYS_VS_tim1	VP_SYS_VS_tim1
+TIM2	PWM Generation CH1	TIM2_CH1	PA15
+TIM2	PWM Generation CH2	TIM2_CH2	PB3
+TIM3	Input Capture direct mode	TIM3_CH1	PA6
+USART1	Asynchronous	USART1_RX	PA10
+USART1	Asynchronous	USART1_TX	PA9
+
+
+
+Pin Nb	PINs	FUNCTIONs	LABELs
+16	PA6	TIM3_CH1	
+17	PA7	ADC1_IN7	
+25	PB12	GPIO_Output	
+26	PB13	GPIO_Output	
+27	PB14	GPIO_Output	
+28	PB15	GPIO_Output	
+29	PA8	GPIO_Output	
+30	PA9	USART1_TX	
+31	PA10	USART1_RX	
+32	PA11	CAN_RX	
+33	PA12	CAN_TX	
+34	PA13	SYS_JTMS-SWDIO	
+37	PA14	SYS_JTCK-SWCLK	
+38	PA15	TIM2_CH1	
+39	PB3	TIM2_CH2	
+
+
+
+SOFTWARE PROJECT
+
+Project Settings : 
+Project Name : APP ECU
+Project Folder : D:\studying\GitHub\Graduation Project\APP ECU
+Toolchain / IDE : STM32CubeIDE
+Firmware Package Name and Version : STM32Cube FW_F1 V1.8.6
+
+
+Code Generation Settings : 
+STM32Cube MCU packages and embedded software packs : Copy only the necessary library files
+Generate peripheral initialization as a pair of '.c/.h' files per peripheral : No
+Backup previously generated files when re-generating : No
+Delete previously generated files when not re-generated : Yes
+Set all free pins as analog (to optimize the power consumption) : No
+
+
+Toolchains Settings : 
+Compiler Optimizations : 
+
+
+
+
+

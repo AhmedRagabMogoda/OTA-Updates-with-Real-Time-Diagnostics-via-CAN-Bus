@@ -111,8 +111,4 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
     {
         Bluetooth_IRQHandler();
     }
-    else if (huart->Instance == USART2)
-    {
-    	Motor_IRQHandler();
-    }
 }

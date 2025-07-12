@@ -8,7 +8,6 @@
 
 #include "TemperatureTask.h"
 
-void SendSensorFrame(uint16_t id, uint16_t value);
 
 /** Extern ADC handle for temperature sensor (configured in CubeMX) **/
 extern ADC_HandleTypeDef hadc1;
@@ -49,9 +48,8 @@ static void StartTemperatureSensorTask(void *pvParameters)
         for (int i = 2; i < 8; i++) { msg.Data[i] = 0U; }
 
         /** Enqueue for CAN transmission **/
-       // xQueueSend(xCanTxQueue, &msg, portMAX_DELAY);
+        xQueueSend(xCanTxQueue, &msg, portMAX_DELAY);
 
-        SendSensorFrame(SENSOR_TEMP_ID,tempInt);
     }
 }
 

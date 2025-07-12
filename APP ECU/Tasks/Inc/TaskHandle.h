@@ -43,7 +43,5 @@ void InitCANTransmitTask(void);
 void InitMotorTask(void);
 void InitTemperatureSensorTask(void);
 void InitUltrasonicTask(void);
-void InitUARTReceiveTask(void);
-void InitUARTTransmitTask(void);
 
 #endif /* INC_TASKHANDLE_H_ */

@@ -17,8 +17,7 @@ void FreeRTOS_Init(void)
 	  InitTemperatureSensorTask();
 	  InitCANTransmitTask();
 	  InitCANReceiveTask();
-	  InitUARTReceiveTask();
-	  InitUARTTransmitTask();
+
 }
 
 void Start_Scheduler(void)

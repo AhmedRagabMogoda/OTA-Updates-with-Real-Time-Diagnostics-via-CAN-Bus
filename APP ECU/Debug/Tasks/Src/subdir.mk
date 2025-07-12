@@ -11,8 +11,6 @@ C_SRCS += \
 ../Tasks/Src/MotorTask.c \
 ../Tasks/Src/TaskHandle.c \
 ../Tasks/Src/TemperatureTask.c \
-../Tasks/Src/UARTReceiveTask.c \
-../Tasks/Src/UARTTransmitTask.c \
 ../Tasks/Src/UltrasonicTask.c 
 
 OBJS += \
@@ -22,8 +20,6 @@ OBJS += \
 ./Tasks/Src/MotorTask.o \
 ./Tasks/Src/TaskHandle.o \
 ./Tasks/Src/TemperatureTask.o \
-./Tasks/Src/UARTReceiveTask.o \
-./Tasks/Src/UARTTransmitTask.o \
 ./Tasks/Src/UltrasonicTask.o 
 
 C_DEPS += \
@@ -33,8 +29,6 @@ C_DEPS += \
 ./Tasks/Src/MotorTask.d \
 ./Tasks/Src/TaskHandle.d \
 ./Tasks/Src/TemperatureTask.d \
-./Tasks/Src/UARTReceiveTask.d \
-./Tasks/Src/UARTTransmitTask.d \
 ./Tasks/Src/UltrasonicTask.d 
 
 
@@ -45,7 +39,7 @@ Tasks/Src/%.o Tasks/Src/%.su Tasks/Src/%.cyclo: ../Tasks/Src/%.c Tasks/Src/subdi
 clean: clean-Tasks-2f-Src
 
 clean-Tasks-2f-Src:
-	-$(RM) ./Tasks/Src/BluetoothTask.cyclo ./Tasks/Src/BluetoothTask.d ./Tasks/Src/BluetoothTask.o ./Tasks/Src/BluetoothTask.su ./Tasks/Src/CANReceiveTask.cyclo ./Tasks/Src/CANReceiveTask.d ./Tasks/Src/CANReceiveTask.o ./Tasks/Src/CANReceiveTask.su ./Tasks/Src/CANTransmitTask.cyclo ./Tasks/Src/CANTransmitTask.d ./Tasks/Src/CANTransmitTask.o ./Tasks/Src/CANTransmitTask.su ./Tasks/Src/MotorTask.cyclo ./Tasks/Src/MotorTask.d ./Tasks/Src/MotorTask.o ./Tasks/Src/MotorTask.su ./Tasks/Src/TaskHandle.cyclo ./Tasks/Src/TaskHandle.d ./Tasks/Src/TaskHandle.o ./Tasks/Src/TaskHandle.su ./Tasks/Src/TemperatureTask.cyclo ./Tasks/Src/TemperatureTask.d ./Tasks/Src/TemperatureTask.o ./Tasks/Src/TemperatureTask.su ./Tasks/Src/UARTReceiveTask.cyclo ./Tasks/Src/UARTReceiveTask.d ./Tasks/Src/UARTReceiveTask.o ./Tasks/Src/UARTReceiveTask.su ./Tasks/Src/UARTTransmitTask.cyclo ./Tasks/Src/UARTTransmitTask.d ./Tasks/Src/UARTTransmitTask.o ./Tasks/Src/UARTTransmitTask.su ./Tasks/Src/UltrasonicTask.cyclo ./Tasks/Src/UltrasonicTask.d ./Tasks/Src/UltrasonicTask.o ./Tasks/Src/UltrasonicTask.su
+	-$(RM) ./Tasks/Src/BluetoothTask.cyclo ./Tasks/Src/BluetoothTask.d ./Tasks/Src/BluetoothTask.o ./Tasks/Src/BluetoothTask.su ./Tasks/Src/CANReceiveTask.cyclo ./Tasks/Src/CANReceiveTask.d ./Tasks/Src/CANReceiveTask.o ./Tasks/Src/CANReceiveTask.su ./Tasks/Src/CANTransmitTask.cyclo ./Tasks/Src/CANTransmitTask.d ./Tasks/Src/CANTransmitTask.o ./Tasks/Src/CANTransmitTask.su ./Tasks/Src/MotorTask.cyclo ./Tasks/Src/MotorTask.d ./Tasks/Src/MotorTask.o ./Tasks/Src/MotorTask.su ./Tasks/Src/TaskHandle.cyclo ./Tasks/Src/TaskHandle.d ./Tasks/Src/TaskHandle.o ./Tasks/Src/TaskHandle.su ./Tasks/Src/TemperatureTask.cyclo ./Tasks/Src/TemperatureTask.d ./Tasks/Src/TemperatureTask.o ./Tasks/Src/TemperatureTask.su ./Tasks/Src/UltrasonicTask.cyclo ./Tasks/Src/UltrasonicTask.d ./Tasks/Src/UltrasonicTask.o ./Tasks/Src/UltrasonicTask.su
 
 .PHONY: clean-Tasks-2f-Src
 

@@ -7,11 +7,11 @@
 
 #include "MotorTask.h"
 
-void SendSensorFrame(uint16_t id, uint16_t value);
 
 /** Extern TIM handle for PWM (configured in CubeMX) */
 extern TIM_HandleTypeDef htim2;
 
+extern QueueHandle_t xCanTxQueue;
 /** Queue handle for incoming motor commands */
 QueueHandle_t xMotorCommandQueue = NULL;
 
@@ -43,6 +43,7 @@ static Motor_t motor_right = {
 static void StartMotorTask(void *pvParameters)
 {
     MotorCommand_t cmd;
+    CanMessage_t msg;
 
     /** Initialize both motors before entering loop **/
     Motor_Init(&motor_left);
@@ -89,7 +90,13 @@ static void StartMotorTask(void *pvParameters)
             Motor_SetSpeed(&motor_right, cmd.speed);
 
 
-            SendSensorFrame(SPEED_ID,(uint16_t)cmd.speed);
+            /** Enqueue CAN message for transmission **/
+            /** Prepare CAN header once **/
+            msg.StdId = SPEED_ID;
+            msg.DLC   = 1;
+            msg.Data[0] = cmd.speed;
+
+            xQueueSend(xCanTxQueue,  &msg, portMAX_DELAY);
 
         }
     }

@@ -8,8 +8,8 @@
 #ifndef ULTRASONIC_INTERFACE_H_
 #define ULTRASONIC_INTERFACE_H_
 
-#define TRIG_PORT GPIOB
-#define TRIG_PIN  GPIO_PIN_5
+#define TRIG_PORT GPIOA
+#define TRIG_PIN  GPIO_PIN_8
 
 /**
  * @brief  Initialize ultrasonic sensor driver

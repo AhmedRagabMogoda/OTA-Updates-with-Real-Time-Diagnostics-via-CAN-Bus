@@ -8,7 +8,6 @@
 
 #include "UltrasonicTask.h"
 
-void SendSensorFrame(uint16_t id, uint16_t value);
 
 /** Queue for CAN transmit (to be created in CAN task) **/
 extern QueueHandle_t xCanTxQueue;
@@ -69,9 +68,7 @@ static void StartUltrasonicTask(void *pvParameters)
         }
 
         /** Enqueue CAN message for transmission **/
-        //xQueueSend(xCanTxQueue, &msg, portMAX_DELAY);
-
-        SendSensorFrame(SENSOR_DIST_ID,distInt);
+        xQueueSend(xCanTxQueue, &msg, portMAX_DELAY);
     }
 }
 
