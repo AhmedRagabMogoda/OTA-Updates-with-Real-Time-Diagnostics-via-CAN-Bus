@@ -1,49 +1,53 @@
-#Sensor_Listener file
-import threading
-import queue
-from CAN_Bus import CanBus
-from Utils import SPEED_ID
+import requests
+import datetime
+import pytz
+import timezonefinder
 
-# Queue for publishing speed messages (id, speed)
-speed_queue = queue.Queue(maxsize=100)
-
-class SensorListener:
-    """
-    Listens on CAN bus for real-time speed frames only.
-    """
-    def __init__(self, channel='can0', bitrate=500000, queue_size=100):
-        self.can = CanBus(channel=channel, bitrate=bitrate, rx_queue_size=queue_size)
-        self._running = False
-        self._thread = threading.Thread(target=self._run, daemon=True)
-
-    def start(self):
-        """Start listening thread."""
-        if not self._running:
-            self._running = True
-            self._thread.start()
-
-    def stop(self):
-        """Stop listening and shutdown CAN."""
-        self._running = False
-        self._thread.join()
-        self.can.shutdown()
-
-    def _run(self):
-        """Internal loop: enqueue only speed data."""
-        while self._running:
-            msg = self.can.recv()
-            if not msg:
-                continue
-            arb_id, data = msg
-            if arb_id == SPEED_ID:
-                speed = data[0] | (data[1] << 8)
+def get_weather():
+    """Get weather data from wttr.in without API key"""
+    try:
+        url = f"https://wttr.in/?format=%t"
+        response = requests.get(url, timeout=3)
+        if response.status_code == 200:
+            temp_str = response.text.strip()
+            if temp_str.endswith('°C'):
+                return float(temp_str.replace('°C', ''))
+            elif temp_str.endswith('°F'):
+                f_temp = float(temp_str.replace('°F', ''))
+                return (f_temp - 32) * 5/9
+            else:
                 try:
-                    speed_queue.put(speed, block=False)
-                except queue.Full:
-                    pass
+                    return float(temp_str)
+                except:
+                    return 25.0
+        return 25.0
+    except Exception as e:
+        print(f"Weather API error: {e}")
+        return 25.0
 
-# Usage:
-# listener = SensorListener()
-# listener.start()
-# # read speed via speed_queue.get()
-# listener.stop()
+def get_location():
+    """Get approximate location based on public IP"""
+    try:
+        response = requests.get('https://ipinfo.io', timeout=2)
+        data = response.json()
+        loc = data.get('loc', '').split(',')
+        city = data.get('city', 'Cairo')
+        country = data.get('country', 'EG')
+        
+        if loc and len(loc) == 2:
+            return float(loc[0]), float(loc[1]), f"{city}, {country}"
+        return 30.0444, 31.2357, "Cairo, EG"
+    except:
+        return 30.0444, 31.2357, "Cairo, EG"
+
+def get_time(lat, lon):
+    """Get local time based on coordinates"""
+    try:
+        tf = timezonefinder.TimezoneFinder()
+        timezone_str = tf.timezone_at(lat=lat, lng=lon)
+        tz = pytz.timezone(timezone_str)
+        now = datetime.datetime.now(tz)
+        return now.strftime('%H:%M:%S'), now.strftime('%Y-%m-%d')
+    except:
+        now = datetime.datetime.now()
+        return now.strftime('%H:%M:%S'), now.strftime('%Y-%m-%d')

@@ -15,8 +15,23 @@
     <section class="card">
       <h2>Live Speed</h2>
       <div id="speed-display" class="value">-- km/h</div>
-      <div id="speed-meta" class="meta">
-        <!-- Filled by JS: time, date, weather, location -->
+      <div class="meta-grid">
+        <div class="meta-item">
+          <div class="meta-label">Time</div>
+          <div id="time-display" class="meta-value">--:--:--</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Date</div>
+          <div id="date-display" class="meta-value">----/--/--</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Temperature</div>
+          <div id="temp-display" class="meta-value">--°C</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Location</div>
+          <div id="loc-display" class="meta-value">Unknown</div>
+        </div>
       </div>
     </section>
 
@@ -33,29 +48,32 @@
           <option value="0x14">Clear DTC</option>
         </select>
         <select id="diag-param-select" class="hidden"></select>
-        <input id="diag-param-input" class="hidden"
-               type="password" placeholder="Enter password" />
+        <input id="diag-param-input" class="hidden" type="password" placeholder="Enter password" />
         <button id="btn-diagnostics">Send</button>
       </div>
+      <div id="diag-status" class="status-message"></div>
       <div id="diag-results" class="results"></div>
       <div class="sensor-reads">
-        <div><strong>Temperature:</strong>
-          <span id="temp-display">--</span> °C
-        </div>
-        <div><strong>Distance:</strong>
-          <span id="dist-display">--</span> cm
-        </div>
+        <div><strong>Internal Temp:</strong> <span id="internal-temp">--</span> °C</div>
+        <div><strong>Distance:</strong> <span id="dist-display">--</span> cm</div>
+      </div>
+      <div id="data-results" class="results hidden">
+        <h3>Received Data:</h3>
+        <pre id="received-data"></pre>
       </div>
     </section>
 
     <!-- OTA Firmware Update Card -->
     <section class="card">
       <h2>OTA Firmware Update</h2>
-      <button id="btn-check-update">Check for Update</button>
-      <button id="btn-download" disabled>Download Firmware</button>
-      <button id="btn-start-update" disabled>Start Update</button>
+      <div class="controls">
+        <button id="btn-check-update">Check for Update</button>
+        <button id="btn-download" disabled>Download Firmware</button>
+        <button id="btn-start-update" disabled>Start Update</button>
+      </div>
+      <div id="ota-status" class="status-message">Idle</div>
       <progress id="ota-progress" value="0" max="100"></progress>
-      <div id="ota-status">Idle</div>
+      <div id="update-status" class="status-message"></div>
     </section>
   </main>
 
@@ -69,7 +87,7 @@
       <button id="btn-dtc-close" class="dtc-close">✕</button>
     </div>
     <div id="dtc-entries" class="dtc-entries">
-      <div class="dtc-entry">No DTC entries yet. Send “Read DTC” to fetch.</div>
+      <div class="dtc-entry">No DTC entries yet. Send "Read DTC" to fetch.</div>
     </div>
   </div>
 

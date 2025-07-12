@@ -1,59 +1,77 @@
 document.addEventListener('DOMContentLoaded', () => {
-  // --- Element references ---
-  const speedDisplay    = document.getElementById('speed-display');
-  const speedMeta       = document.getElementById('speed-meta');
-  const diagService     = document.getElementById('diag-service');
+  // Element references
+  const speedDisplay = document.getElementById('speed-display');
+  const timeDisplay = document.getElementById('time-display');
+  const dateDisplay = document.getElementById('date-display');
+  const tempDisplay = document.getElementById('temp-display');
+  const locDisplay = document.getElementById('loc-display');
+  const diagService = document.getElementById('diag-service');
   const diagParamSelect = document.getElementById('diag-param-select');
-  const diagParamInput  = document.getElementById('diag-param-input');
-  const btnDiagnostics  = document.getElementById('btn-diagnostics');
-  const diagResults     = document.getElementById('diag-results');
-  const btnCheck        = document.getElementById('btn-check-update');
-  const btnDownload     = document.getElementById('btn-download');
-  const btnStart        = document.getElementById('btn-start-update');
-  const otaProgress     = document.getElementById('ota-progress');
-  const otaStatus       = document.getElementById('ota-status');
-  const btnDtcToggle    = document.getElementById('btn-dtc-toggle');
-  const dtcPanel        = document.getElementById('dtc-panel');
-  const btnDtcClose     = document.getElementById('btn-dtc-close');
-  const dtcEntries      = document.getElementById('dtc-entries');
+  const diagParamInput = document.getElementById('diag-param-input');
+  const btnDiagnostics = document.getElementById('btn-diagnostics');
+  const diagResults = document.getElementById('diag-results');
+  const diagStatus = document.getElementById('diag-status');
+  const btnCheck = document.getElementById('btn-check-update');
+  const btnDownload = document.getElementById('btn-download');
+  const btnStart = document.getElementById('btn-start-update');
+  const otaProgress = document.getElementById('ota-progress');
+  const otaStatus = document.getElementById('ota-status');
+  const updateStatus = document.getElementById('update-status');
+  const btnDtcToggle = document.getElementById('btn-dtc-toggle');
+  const dtcPanel = document.getElementById('dtc-panel');
+  const btnDtcClose = document.getElementById('btn-dtc-close');
+  const dtcEntries = document.getElementById('dtc-entries');
+  const internalTemp = document.getElementById('internal-temp');
+  const distDisplay = document.getElementById('dist-display');
 
-  // --- Diagnostics sub-function maps ---
+  // Diagnostics sub-function options
   const subOptions = {
-    '0x10': [
-      { value: '0x00', text: 'Session Default' },
-      { value: '0x01', text: 'Session Sensor' },
-      { value: '0x02', text: 'Session Control' },
-      { value: '0x03', text: 'Session Programming' }
+    '0x10': [ // Session Control
+      { value: '0x00', text: 'DEFAULT' },
+      { value: '0x01', text: 'SENSOR' },
+      { value: '0x02', text: 'CONTROL' },
+      { value: '0x03', text: 'PROGRAMMING' }
     ],
-    '0x22': [
-      { value: '0xF190', text: 'Read Temperature DID' },
-      { value: '0xF191', text: 'Read Distance DID' }
-    ]
+    '0x22': [ // Read Data by ID
+      { value: '0x01', text: 'TEMPERATURE' },
+      { value: '0x02', text: 'DISTANCE' }
+    ],
+    '0x27': [],     // Security Access
+    '0x19': [],     // Read DTC
+    '0x14': []      // Clear DTC
   };
 
-  // Show or hide the param widget
+  // OTA states
+  let otaState = {
+    ready: false,
+    firmwarePath: '',
+    version: null
+  };
+
   function refreshParamWidget() {
     const svc = diagService.value;
+    // Clear param controls
+    diagParamSelect.innerHTML = '';
+    diagParamInput.value = '';
+    diagParamSelect.classList.add('hidden');
+    diagParamInput.classList.add('hidden');
+    // If security access, show input
     if (svc === '0x27') {
-      diagParamInput.type = 'password';
-      diagParamInput.placeholder = 'Enter password';
+      diagParamInput.placeholder = 'Enter password (hex)';
+      diagParamInput.type = 'text';
       diagParamInput.classList.remove('hidden');
-      diagParamSelect.classList.add('hidden');
-    } else if (subOptions[svc]) {
-      diagParamSelect.classList.remove('hidden');
-      diagParamInput.classList.add('hidden');
-      diagParamSelect.innerHTML = '';
+    }
+    // If has sub-options
+    else if (subOptions[svc] && subOptions[svc].length > 0) {
+      diagParamSelect.appendChild(new Option('Select...', ''));  
       subOptions[svc].forEach(opt => {
-        const o = document.createElement('option');
-        o.value = opt.value;
-        o.textContent = opt.text;
-        diagParamSelect.appendChild(o);
+        diagParamSelect.appendChild(new Option(opt.text, opt.value));
       });
-    } else {
-      diagParamSelect.classList.add('hidden');
-      diagParamInput.classList.add('hidden');
+      diagParamSelect.classList.remove('hidden');
     }
   }
+
+  // Initialize
   diagService.value = '';
   refreshParamWidget();
   diagService.addEventListener('change', refreshParamWidget);
@@ -61,183 +79,232 @@ document.addEventListener('DOMContentLoaded', () => {
   // Send Diagnostics request
   btnDiagnostics.addEventListener('click', () => {
     const sid = diagService.value;
-    if (!sid) {
-      alert('Please select a diagnostic service');
-      return;
-    }
+    if (!sid) return;
+    
     let param = '';
     if (!diagParamInput.classList.contains('hidden')) {
       param = diagParamInput.value;
     } else if (!diagParamSelect.classList.contains('hidden')) {
       param = diagParamSelect.value;
     }
+    
+    diagStatus.textContent = "Sending request...";
+    diagStatus.className = "status-message info";
+    
     fetch('/diagnostics', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {'Content-Type':'application/json'},
       body: JSON.stringify({ sid, param })
     })
-    .then(() => {
-      // clear previous results
-      diagResults.textContent = '';
-      diagService.value = '';
-      refreshParamWidget();
-    })
-    .catch(err => console.error(err));
+    .catch(error => {
+      diagStatus.textContent = `Error: ${error.message}`;
+      diagStatus.className = "status-message error";
+    });
   });
 
-  // DTC Panel controls
+  // DTC Panel
+  let dtcLog = [];
+  function renderDtc() {
+    dtcEntries.innerHTML = dtcLog.length
+      ? dtcLog.map(m => `<div class="dtc-entry">${m}</div>`).join('')
+      : '<div class="dtc-entry">No DTC entries.</div>';
+  }
   btnDtcToggle.addEventListener('click', () => dtcPanel.classList.toggle('hidden'));
-  btnDtcClose .addEventListener('click', () => dtcPanel.classList.add('hidden'));
-  const dtcLog = [];
-  function renderDtcEntries() {
-    dtcEntries.innerHTML = '';
-    if (dtcLog.length === 0) {
-      dtcEntries.innerHTML = '<div class="dtc-entry">No DTC entries yet.</div>';
+  btnDtcClose.addEventListener('click', () => dtcPanel.classList.add('hidden'));
+
+  // SSE helper
+  function listenSSE(url, onData) {
+    const es = new EventSource(url);
+    es.onmessage = e => onData(e.data);
+  }
+
+  // Streams
+  listenSSE('/speed-stream', d => speedDisplay.textContent = `${d} km/h`);
+  
+  listenSSE('/meta-stream', d => {
+    try {
+      const data = JSON.parse(d);
+      timeDisplay.textContent = data.time || '--:--:--';
+      dateDisplay.textContent = data.date || '----/--/--';
+      tempDisplay.textContent = data.temp || '--°C';
+      locDisplay.textContent = data.loc || 'Unknown';
+    } catch {
+      // Fallback if parsing fails
+      timeDisplay.textContent = '--:--:--';
+      dateDisplay.textContent = '----/--/--';
+      tempDisplay.textContent = '--°C';
+      locDisplay.textContent = 'Unknown';
+    }
+  });
+  
+  listenSSE('/diag-stream', d => {
+    // Always display the message
+    diagResults.textContent += d + '\n';
+    diagResults.scrollTop = diagResults.scrollHeight;
+    
+    // Check for special data messages
+    if (d.startsWith("TEMPERATURE_DATA:")) {
+        const value = d.split(':')[1];
+        internalTemp.textContent = `${value} °C`;
+        diagStatus.textContent = "Read temperature succeeded";
+        diagStatus.className = "status-message success";
+    } else if (d.startsWith("DISTANCE_DATA:")) {
+        const value = d.split(':')[1];
+        distDisplay.textContent = `${value} cm`;
+        diagStatus.textContent = "Read distance succeeded";
+        diagStatus.className = "status-message success";
+    } else if (d.includes("Operation failed")) {
+        diagStatus.textContent = d;
+        diagStatus.className = "status-message error";
+    } else if (d.includes("succeeded")) {
+        diagStatus.textContent = d;
+        diagStatus.className = "status-message success";
+    }
+  });
+  
+  listenSSE('/dtc-stream', d => {
+    try {
+      dtcLog = JSON.parse(d);
+      renderDtc(); 
+      dtcPanel.classList.remove('hidden');
+    } catch (e) {
+      console.error('Error parsing DTC data:', e);
+    }
+  });
+  
+  listenSSE('/ota-progress', p => { 
+    if (typeof p === 'string') {
+        if (p.includes("Vehicle ready for update")) {
+            updateStatus.textContent = "Vehicle ready for update - Starting firmware upload";
+            updateStatus.className = "status-message info";
+        }
+        else if (p === "UPDATE_COMPLETE") {
+            otaProgress.value = 100;
+            otaStatus.textContent = 'Update completed successfully!';
+            otaStatus.className = "status-message success";
+            updateStatus.textContent = "Firmware update completed successfully";
+            updateStatus.className = "status-message success";
+            btnStart.disabled = true;
+        }
+        else if (p === "UPDATE_FAILED") {
+            otaStatus.textContent = "Update failed on vehicle side";
+            otaStatus.className = "status-message error";
+            updateStatus.textContent = "Firmware update failed";
+            updateStatus.className = "status-message error";
+            btnStart.disabled = false;
+        }
+        else if (p.includes("ACK received")) {
+            // Just log, no special handling
+            otaStatus.textContent = p;
+        }
+        else if (p.includes("error")) {
+            otaStatus.textContent = p;
+            otaStatus.className = "status-message error";
+            updateStatus.textContent = "Firmware update failed";
+            updateStatus.className = "status-message error";
+            btnStart.disabled = false;
+        }
+        else {
+            otaStatus.textContent = p;
+        }
     } else {
-      dtcLog.forEach(msg => {
-        const d = document.createElement('div');
-        d.className = 'dtc-entry';
-        d.textContent = msg;
-        dtcEntries.appendChild(d);
-      });
+        const pr = parseInt(p, 10);
+        otaProgress.value = pr;
+        otaStatus.textContent = `Update: ${pr}%`;
     }
-  }
+  });
 
-  // SSE: DTC stream
-  new EventSource('/dtc-stream').onmessage = e => {
-    const arr = JSON.parse(e.data);
-    arr.forEach(m => dtcLog.push(m));
-    if (dtcLog.length > 10) dtcLog.splice(0, dtcLog.length - 10);
-    renderDtcEntries();
-    dtcPanel.classList.remove('hidden');
-  };
-
-  // --- OTA Update workflow (unchanged) ---
-  let firmwareReady = false;
-
+  // OTA actions
   btnCheck.addEventListener('click', async () => {
-    otaStatus.textContent = 'Checking...';
+    otaStatus.textContent = 'Checking for updates...';
+    otaStatus.className = "status-message info";
     try {
-      const res = await fetch('/ota/fetch');
-      const data = await res.json();
-      if (data.available) {
-        otaStatus.textContent = `Firmware v${data.version} available`;
-        btnDownload.disabled = false;
-        btnDownload.dataset.url = data.url;
-        btnDownload.dataset.version = data.version;
-      } else {
-        otaStatus.textContent = 'No update available';
-        btnDownload.disabled = true;
+      const res = await fetch('/ota/fetch'); 
+      const js = await res.json();
+      
+      if (js.available) { 
+        otaState.updateAvailable = true;
+        otaState.version = js.version;
+        btnDownload.disabled = false; 
+        otaStatus.textContent = js.message; 
+        otaStatus.className = "status-message success";
+        btnDownload.dataset.ver = js.version; 
+        btnDownload.dataset.url = js.url;
+      } else { 
+        otaStatus.textContent = js.message; 
+        otaStatus.className = "status-message warning";
+        btnDownload.disabled = true; 
       }
-    } catch {
-      otaStatus.textContent = 'Check failed';
+    } catch (error) { 
+      otaStatus.textContent = `Check error: ${error.message}`; 
+      otaStatus.className = "status-message error";
     }
   });
-
+  
   btnDownload.addEventListener('click', async () => {
-    otaStatus.textContent = 'Downloading...';
+    otaStatus.textContent = 'Downloading firmware...'; 
+    otaStatus.className = "status-message info";
     btnDownload.disabled = true;
-    try {
-      const v = btnDownload.dataset.version;
-      const u = btnDownload.dataset.url;
-      const r = await fetch(`/ota/download?version=${v}&url=${encodeURIComponent(u)}`);
-      if (!r.ok) throw new Error();
-      otaStatus.textContent = `Downloaded v${v}`;
-      firmwareReady = true;
-      btnStart.disabled = false;
-    } catch {
-      otaStatus.textContent = 'Download failed';
-      btnDownload.disabled = false;
+    
+    try { 
+      const v = btnDownload.dataset.ver, 
+            u = btnDownload.dataset.url; 
+      
+      const r = await fetch(`/ota/download?version=${v}&url=${encodeURIComponent(u)}`); 
+      const result = await r.json();
+      
+      if (result.success) { 
+        otaStatus.textContent = `Downloaded v${v}`; 
+        otaStatus.className = "status-message success";
+        updateStatus.textContent = "Firmware downloaded successfully";
+        updateStatus.className = "status-message success";
+        otaState.ready = true; 
+        otaState.firmwarePath = result.path;
+        btnStart.disabled = false;
+      } else {
+        otaStatus.textContent = result.error; 
+        otaStatus.className = "status-message error";
+        updateStatus.textContent = "Firmware download failed";
+        updateStatus.className = "status-message error";
+        btnDownload.disabled = false; 
+      }
+    } catch (error) { 
+      otaStatus.textContent = `Download failed: ${error.message}`; 
+      otaStatus.className = "status-message error";
+      updateStatus.textContent = "Firmware download failed";
+      updateStatus.className = "status-message error";
+      btnDownload.disabled = false; 
     }
   });
-
+  
   btnStart.addEventListener('click', () => {
-    if (!firmwareReady) return;
-    otaStatus.textContent = 'Requesting download mode...';
+    if (!otaState.ready) return;
+    
+    otaStatus.textContent = 'Starting OTA update...'; 
+    otaStatus.className = "status-message info";
     btnStart.disabled = true;
-    fetch('/diagnostics', {
+    
+    // Send start command
+    fetch('/ota/start', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ sid: '0x34', param: '' })
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ path: otaState.firmwarePath })
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        updateStatus.textContent = data.message;
+        updateStatus.className = "status-message success";
+      } else {
+        updateStatus.textContent = data.error;
+        updateStatus.className = "status-message error";
+        btnStart.disabled = false;
+      }
+    })
+    .catch(error => {
+      updateStatus.textContent = `Error: ${error.message}`;
+      updateStatus.className = "status-message error";
+      btnStart.disabled = false;
     });
   });
-
-new EventSource('/diag-stream').onmessage = e => {
-  console.log('[SSE diag]', e.data);
-
-  // أنشئ عنصر <div> جديد لكل رسالة
-  const msgDiv = document.createElement('div');
-  msgDiv.textContent = e.data;
-  msgDiv.className = 'diag-entry';  // يمكنك تخصيص CSS لاحقًا
-
-  // أضف العنصر إلى مربع النتائج
-  diagResults.appendChild(msgDiv);
-
-  // مرّر شريط التمرير إلى الأسفل
-  diagResults.scrollTop = diagResults.scrollHeight;
-
-  // تابع ACK للبدء بالرفع
-  if (e.data.startsWith('Download mode: True')) {
-    otaStatus.textContent = 'Uploading firmware...';
-    fetch('/ota-start', {/*…*/});
-  }
-};
-
-
-  new EventSource('/ota-progress').onmessage = e => {
-    const p = parseInt(e.data, 10);
-    otaProgress.value = p;
-    otaStatus.textContent = `Update: ${p}%`;
-    if (p >= 100) {
-      otaStatus.textContent = 'Update completed successfully!';
-    }
-  };
-
-  // --- Speed & Meta updates ---
-  new EventSource('/speed-stream').onmessage = e => {
-    speedDisplay.textContent = `${e.data} km/h`;
-  };
-
-  // Geolocation & reverse-geocoding
-  let locLat=null, locLon=null, city='Unknown', country='';
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(pos => {
-      locLat = pos.coords.latitude.toFixed(4);
-      locLon = pos.coords.longitude.toFixed(4);
-      fetch(`https://nominatim.openstreetmap.org/reverse?lat=${locLat}&lon=${locLon}&format=json`)
-        .then(r => r.json())
-        .then(j => {
-          city    = j.address.city || j.address.town || j.address.village || city;
-          country = j.address.country || country;
-        })
-        .catch(() => {});
-    });
-  }
-
-  // Weather fetch
-  let weatherTemp = null;
-  async function updateWeather() {
-    if (locLat===null) return;
-    try {
-      const r = await fetch(
-        `https://api.open-meteo.com/v1/forecast?latitude=${locLat}&longitude=${locLon}&current_weather=true`
-      );
-      const jd = await r.json();
-      weatherTemp = jd.current_weather.temperature;
-    } catch {
-      weatherTemp = null;
-    }
-  }
-  updateWeather();
-  setInterval(updateWeather, 60000);
-
-  // Update meta every second
-  setInterval(()=>{
-    const now = new Date();
-    const t   = now.toLocaleTimeString('en-GB');
-    const d   = now.toISOString().slice(0,10);
-    const icon= (weatherTemp!==null && weatherTemp>=25) ? '🔥' : '❄️';
-    const tempStr = (weatherTemp!==null) ? `${weatherTemp}°C` : '--';
-    speedMeta.textContent = `${t} | ${d} | ${icon} ${tempStr} | ${city}, ${country}`;
-  }, 1000);
 });
